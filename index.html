@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arsenal de Formatos — CD Grupo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1120; --navy-2: #111827; --navy-3: #1a2235;
+    --gold: #C9A84C; --gold-light: #E8C97A;
+    --white: #F8F5EF; --gray: #8a8f9e; --gray-light: #c2c7d4;
+    --border: rgba(201,168,76,0.18); --border-soft: rgba(255,255,255,0.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--white); font-family: 'DM Sans', sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 2rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 60%); pointer-events: none; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--gold); border: 0.5px solid var(--border); padding: 6px 16px; border-radius: 100px; margin-bottom: 2rem; background: rgba(201,168,76,0.06); animation: fadeDown 0.8s ease both; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em; margin-bottom: 1.5rem; animation: fadeDown 0.8s 0.1s ease both; }
+  .hero-title span { display: block; color: var(--gold); }
+  .hero-sub { font-size: 1.1rem; color: var(--gray-light); max-width: 520px; line-height: 1.7; margin-bottom: 3rem; animation: fadeDown 0.8s 0.2s ease both; }
+  .hero-nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; animation: fadeDown 0.8s 0.3s ease both; }
+  .hero-nav a { font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--gray-light); text-decoration: none; border: 0.5px solid var(--border-soft); padding: 8px 18px; border-radius: 100px; transition: all 0.2s; background: rgba(255,255,255,0.03); }
+  .hero-nav a:hover { color: var(--gold); border-color: var(--border); background: rgba(201,168,76,0.07); }
+  .scroll-hint { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--gray); letter-spacing: 0.1em; animation: bounce 2s infinite; }
+
+  .sticky-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(11,17,32,0.9); backdrop-filter: blur(12px); border-bottom: 0.5px solid var(--border-soft); padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; transform: translateY(-100%); transition: transform 0.3s ease; }
+  .sticky-nav.visible { transform: translateY(0); }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--gold); }
+  .nav-links { display: flex; gap: 1.5rem; overflow-x: auto; }
+  .nav-links a { font-size: 11px; color: var(--gray); text-decoration: none; white-space: nowrap; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+
+  .section { padding: 5rem 0; border-top: 0.5px solid var(--border-soft); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+  .format { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-bottom: 7rem; opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .format.visible { opacity: 1; transform: translateY(0); }
+  .format:last-child { margin-bottom: 0; }
+
+  .format-number { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; }
+  .format-number::after { content: ''; flex: 1; height: 0.5px; background: var(--border); max-width: 40px; }
+  .format-name { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; line-height: 1.1; margin-bottom: 1rem; }
+  .format-tagline { font-size: 14px; color: var(--gold-light); font-weight: 500; margin-bottom: 1.5rem; font-style: italic; }
+  .format-desc { font-size: 15px; color: var(--gray-light); line-height: 1.75; margin-bottom: 2rem; }
+
+  .quality-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+  .quality-badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 100px; border: 0.5px solid; }
+  .badge-gold { color: var(--gold); border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.07); }
+  .badge-blue { color: #7EB8F7; border-color: rgba(126,184,247,0.3); background: rgba(126,184,247,0.07); }
+  .badge-green { color: #7DD4A8; border-color: rgba(125,212,168,0.3); background: rgba(125,212,168,0.07); }
+  .badge-coral { color: #F4916C; border-color: rgba(244,145,108,0.3); background: rgba(244,145,108,0.07); }
+
+  .gold-line { width: 40px; height: 1px; background: var(--gold); margin: 2rem 0; }
+
+  .recipe { background: var(--navy-3); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .recipe-header { background: rgba(201,168,76,0.08); border-bottom: 0.5px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 10px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: var(--gold); }
+  .recipe-section { padding: 1.5rem; }
+  .recipe-section + .recipe-section { border-top: 0.5px solid var(--border-soft); }
+  .recipe-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .ingredients { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .ingredients li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--gray-light); line-height: 1.5; }
+  .ing-dot { width: 20px; height: 20px; border-radius: 50%; border: 0.5px solid var(--border); background: rgba(201,168,76,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .ing-dot svg { width: 8px; height: 8px; fill: var(--gold); }
+  .steps { counter-reset: steps; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .steps li { counter-increment: steps; display: flex; align-items: flex-start; gap: 12px; font-size: 13px; color: var(--gray-light); line-height: 1.6; }
+  .steps li::before { content: counter(steps); font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--gold); background: rgba(201,168,76,0.1); border: 0.5px solid var(--border); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  .videos-panel { background: var(--navy-2); border: 0.5px solid var(--border-soft); border-radius: 16px; padding: 1.5rem; }
+  .videos-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gray); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .video-slots { display: flex; flex-direction: column; gap: 10px; }
+  .video-slot-wrap { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.03); border: 0.5px dashed rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 12px; transition: border-color 0.2s; }
+  .video-slot-wrap:focus-within { border-color: var(--border); background: rgba(201,168,76,0.04); }
+  .video-thumb { width: 44px; height: 32px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .play-icon { width: 0; height: 0; border-left: 9px solid rgba(255,255,255,0.25); border-top: 5px solid transparent; border-bottom: 5px solid transparent; margin-left: 3px; }
+  .video-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .video-slot-label { font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--gray); text-transform: uppercase; }
+  .video-input { width: 100%; background: transparent; border: none; outline: none; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--white); padding: 0; }
+  .video-input::placeholder { color: rgba(138,143,158,0.4); }
+  .video-go-btn { background: rgba(201,168,76,0.1); border: 0.5px solid var(--border); color: var(--gold); border-radius: 6px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; opacity: 0.3; transition: opacity 0.2s; }
+  .video-go-btn.active, .video-go-btn:hover { opacity: 1; }
+
+  .instruction { background: rgba(201,168,76,0.05); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 4rem; display: flex; gap: 12px; align-items: flex-start; }
+  .instruction-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .instruction-text { font-size: 13px; color: var(--gray-light); line-height: 1.6; }
+  .instruction-text strong { color: var(--gold-light); font-weight: 500; }
+
+  .sync-bar { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--navy-3); border: 0.5px solid var(--border); border-radius: 100px; padding: 8px 16px; font-size: 12px; color: var(--gold); font-family: 'DM Mono', monospace; letter-spacing: 0.05em; opacity: 0; transition: opacity 0.3s; z-index: 200; pointer-events: none; }
+  .sync-bar.show { opacity: 1; }
+
+  footer { border-top: 0.5px solid var(--border-soft); padding: 3rem 2rem; text-align: center; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); margin-bottom: 0.5rem; }
+  .footer-sub { font-size: 12px; color: var(--gray); letter-spacing: 0.08em; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+  @media (max-width: 768px) { .format { grid-template-columns: 1fr; gap: 2rem; } .hero-title { font-size: 2.8rem; } }
+</style>
+</head>
+<body>
+
+<nav class="sticky-nav" id="stickyNav">
+  <div class="nav-logo">CD Grupo</div>
+  <div class="nav-links">
+    <a href="#tela-dividida">Tela Dividida</a>
+    <a href="#tela-verde">Tela Verde</a>
+    <a href="#reacao">Reação</a>
+    <a href="#corte">Cortes</a>
+    <a href="#rotina">Rotina</a>
+    <a href="#motivacional">Motivacional</a>
+    <a href="#lofi">Low fi</a>
+    <a href="#caixinha">Caixinha</a>
+    <a href="#bastidores">Bastidores</a>
+  </div>
+</nav>
+
+<div class="sync-bar" id="syncBar"></div>
+
+<section class="hero">
+  <div class="hero-tag">
+    <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#C9A84C"/></svg>
+    CD GRUPO · CHAVE ESMERALDA
+  </div>
+  <h1 class="hero-title">Arsenal de<br><span>Formatos</span></h1>
+  <p class="hero-sub">9 formatos de vídeo com ingredientes, modo de preparo e exemplos reais. O guia definitivo pra você produzir conteúdo com consistência e resultado.</p>
+  <nav class="hero-nav">
+    <a href="#tela-dividida">Tela Dividida</a>
+    <a href="#tela-verde">Tela Verde</a>
+    <a href="#reacao">Reação</a>
+    <a href="#corte">Cortes</a>
+    <a href="#rotina">Rotina</a>
+    <a href="#motivacional">Motivacional</a>
+    <a href="#lofi">Low fi</a>
+    <a href="#caixinha">Caixinha</a>
+    <a href="#bastidores">Bastidores</a>
+  </nav>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M3 8l4 4 4-4" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<main class="container">
+  <div class="instruction">
+    <div class="instruction-icon">📌</div>
+    <div class="instruction-text">
+      <strong>Como usar:</strong> cole os links dos vídeos de exemplo em cada slot. Os links ficam salvos automaticamente no Firebase e aparecem pra todos os membros em qualquer dispositivo.
+    </div>
+  </div>
+
+  <!-- 01 TELA DIVIDIDA -->
+  <section class="section" id="tela-dividida">
+    <div class="format visible">
+      <div>
+        <div class="format-number">01 / 09</div>
+        <h2 class="format-name">Tela Dividida</h2>
+        <p class="format-tagline">"O contraste que convence antes de qualquer palavra"</p>
+        <p class="format-desc">Dois vídeos lado a lado na mesma tela. O olho do espectador divide a atenção entre os dois lados — e essa tensão visual é o que prende. Antes × depois, você × cliente, pergunta × resposta. Sem precisar falar muito: a imagem já argumenta.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-gold">Alto contraste visual</span>
+          <span class="quality-badge badge-green">Retenção elevada</span>
+          <span class="quality-badge badge-blue">Prova social forte</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>2 vídeos distintos com o mesmo formato vertical</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Contraste claro entre os dois lados (situação A ≠ situação B)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Texto curto separando os lados ("ANTES" / "DEPOIS")</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Áudio de um lado ou música instrumental de fundo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 15 a 30 segundos</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Escolha o contraste — o mais poderoso é resultado financeiro antes × depois</li>
+              <li>Grave ou separe os dois vídeos com a mesma orientação vertical e duração semelhante</li>
+              <li>No CapCut: use o efeito "tela dividida" e posicione lado a lado</li>
+              <li>Adicione texto no topo de cada lado com no máximo 3 palavras</li>
+              <li>O lado do "resultado" ou "você" deve ficar à direita — é onde o olho termina</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="0"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 TELA VERDE -->
+  <section class="section" id="tela-verde">
+    <div class="format">
+      <div>
+        <div class="format-number">02 / 09</div>
+        <h2 class="format-name">Tela Verde</h2>
+        <p class="format-tagline">"Produção elevada com zero custo — já está no seu app"</p>
+        <p class="format-desc">Tela verde é um efeito nativo do Instagram, TikTok e CapCut. Você abre a câmera, seleciona o efeito "tela verde" e escolhe qualquer imagem ou vídeo da sua galeria como fundo — você aparece na frente. Zero equipamento, zero gasto.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-gold">Zero custo de produção</span>
+          <span class="quality-badge badge-coral">Diferenciação no feed</span>
+          <span class="quality-badge badge-blue">Explicação visual forte</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Celular com Instagram, TikTok ou CapCut instalado</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Imagem ou vídeo salvo na galeria pra usar como fundo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Fundo com informação relevante — print, gráfico, resultado, foto</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Boa iluminação no rosto — pra destacar você do fundo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Roteiro curto de 30 a 60 segundos comentando o que está no fundo</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Salve na galeria a imagem ou vídeo que vai usar como fundo</li>
+              <li>No Instagram: câmera dos Reels → efeitos → pesquise "tela verde" → selecione o fundo da galeria</li>
+              <li>No TikTok: nova gravação → efeitos → "tela verde" → escolha a imagem da galeria</li>
+              <li>No CapCut: grave normalmente e aplique o efeito tela verde na edição</li>
+              <li>Posicione-se à esquerda ou direita — deixe o fundo visível e legível</li>
+              <li>Fale diretamente sobre o que está no fundo — o contexto visual já faz metade do trabalho</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="1"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 REAÇÃO -->
+  <section class="section" id="reacao">
+    <div class="format">
+      <div>
+        <div class="format-number">03 / 09</div>
+        <h2 class="format-name">Reação</h2>
+        <p class="format-tagline">"Sua autoridade em cima da tração de outra pessoa"</p>
+        <p class="format-desc">Você comenta, analisa ou reage ao vídeo de outra pessoa. O algoritmo pega carona no vídeo original, e você aparece como o especialista que domina o assunto a ponto de analisar o que outros falam.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-green">Carona no algoritmo</span>
+          <span class="quality-badge badge-gold">Posicionamento forte</span>
+          <span class="quality-badge badge-blue">Debate e comentários</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Vídeo original com 10k+ visualizações (de preferência)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Ponto de vista diferente ou complementar ao vídeo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Câmera de frente com boa iluminação</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Trecho do vídeo original (15 a 20s é o ideal)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Argumento sólido — não só concordar ou discordar</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Escolha vídeos do seu nicho que geraram debate ou têm informação incompleta</li>
+              <li>Salve ou screen-grave o trecho mais relevante (máx 20s)</li>
+              <li>Grave sua reação: comece já com a opinião — sem introdução</li>
+              <li>Monte: trecho do vídeo original → sua reação → conclusão</li>
+              <li>Coloque o perfil do criador original nos créditos</li>
+              <li>Finalize com uma pergunta pra audiência — isso puxa comentário</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 CORTES -->
+  <section class="section" id="corte">
+    <div class="format">
+      <div>
+        <div class="format-number">04 / 09</div>
+        <h2 class="format-name">Cortes</h2>
+        <p class="format-tagline">"1 reunião vira 5 Reels sem gravar mais nada"</p>
+        <p class="format-desc">Extrai o melhor de uma conversa longa — uma call, uma mentoria, uma entrevista — e publica como Reel. Parece espontâneo mas é cirurgicamente editado. É o formato que mais aproveita o que você já produz sem perceber.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-green">Reaproveitamento total</span>
+          <span class="quality-badge badge-gold">Alta credibilidade</span>
+          <span class="quality-badge badge-coral">Escala de conteúdo</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Gravação de reunião, call ou entrevista (mín. 20 min)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Trecho de 45s a 90s com tensão, insight ou revelação</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Legenda burned-in (automática no CapCut)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Abertura com a frase mais forte — não com contexto</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Corte de respirações e silêncios longos</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Grave TODAS as suas reuniões e calls — o conteúdo nasce aí</li>
+              <li>Assista e marque timestamps dos momentos de maior insight ou emoção</li>
+              <li>Recorte o trecho escolhido e remova pausas e respirações</li>
+              <li>Reposicione a abertura: coloque a resposta mais forte nos primeiros 3 segundos</li>
+              <li>Adicione legenda automática e destaque palavras-chave em cor diferente</li>
+              <li>Finalize com um frame de encerramento pedindo o próximo passo</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 ROTINA -->
+  <section class="section" id="rotina">
+    <div class="format">
+      <div>
+        <div class="format-number">05 / 09</div>
+        <h2 class="format-name">Vídeo de Rotina</h2>
+        <p class="format-tagline">"Mostra que o estilo de vida é consequência do método"</p>
+        <p class="format-desc">O empresário em ação no dia real — reunião, deslocamento, manhã de trabalho, almoço estratégico. Não é lifestyle vazio: é a prova de que o que você ensina você vive. A audiência não compra produto, compra identidade.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-gold">Identidade aspiracional</span>
+          <span class="quality-badge badge-green">Humanização real</span>
+          <span class="quality-badge badge-blue">Atração do ICP certo</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Celular em mão — câmera traseira pra cenários, frontal pra narração</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>5 a 8 cenas diferentes do mesmo dia ou período</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Gancho escrito nos primeiros segundos — texto na tela que resume o vídeo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 30 a 60 segundos</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Defina antes o gancho — uma frase escrita que resume o vídeo. Ex: "Como foi o dia que fechamos R$50k"</li>
+              <li>Coloque esse gancho em texto na tela nos primeiros 2 a 3 segundos — é o que segura o dedo do espectador</li>
+              <li>Grave em tempo real — não monte cena depois. O ambiente real é o cenário</li>
+              <li>Capture momentos de decisão, não só de lazer — reunião, ligação, análise</li>
+              <li>O corte de cada cena deve ter exatamente 0.2, 1.6 ou 1.8 segundos — fora disso o ritmo quebra</li>
+              <li>Feche com uma frase de impacto sobre o dia ou o resultado</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 MOTIVACIONAL -->
+  <section class="section" id="motivacional">
+    <div class="format">
+      <div>
+        <div class="format-number">06 / 09</div>
+        <h2 class="format-name">Motivacional</h2>
+        <p class="format-tagline">"A emoção que move antes da razão convencer"</p>
+        <p class="format-desc">Vídeo de discurso, narrativa ou frase de impacto com edição que amplifica a emoção. Não é motivação vazia: é posicionamento emocional que cria lealdade de audiência. Quem se emociona com você compra de você.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-coral">Lealdade de audiência</span>
+          <span class="quality-badge badge-gold">Alta retenção</span>
+          <span class="quality-badge badge-green">Compartilhamento alto</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Narrativa pessoal ou ideia de impacto — real e vivida</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Música cinematográfica de fundo (volume baixo)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Voz clara, com ritmo variado — pausas deliberadas</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 45s a 90s — não alongue o clímax</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Grave com emoção real: fale como se estivesse numa reunião decisiva</li>
+              <li>Adicione música antes de editar — edite os cortes no ritmo dela</li>
+              <li>A frase aparece durante todo o vídeo na tela — fonte padrão, sem edição exagerada</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="5"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 LOW FI -->
+  <section class="section" id="lofi">
+    <div class="format">
+      <div>
+        <div class="format-number">07 / 09</div>
+        <h2 class="format-name">Low fi</h2>
+        <p class="format-tagline">"Sem produção. Sem desculpa. Só verdade."</p>
+        <p class="format-desc">Câmera apoiada em alguma coisa, você falando direto sem cortes. O formato mais rápido de gravar e o mais subestimado por quem já tem produção. O contraste com o feed editado de todo mundo é o que chama atenção.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-gold">Velocidade de produção</span>
+          <span class="quality-badge badge-green">Autenticidade máxima</span>
+          <span class="quality-badge badge-blue">Retenção por naturalidade</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Celular apoiado — sem segurar, sem tremular</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Fundo limpo e neutro — parede, mesa, ambiente de trabalho</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Ideia forte o suficiente pra dispensar edição</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Luz natural ou frontal</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 30 a 60 segundos sem corte nenhum</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Pense na ideia antes — estruture: abertura, desenvolvimento, conclusão</li>
+              <li>Apoie o celular em qualquer coisa — livro, copo, suporte de mesa</li>
+              <li>Grave sem parar. Se errar, continue — pode cortar só as gafes grandes</li>
+              <li>Poste com legenda mínima — o conteúdo é o vídeo, não a legenda</li>
+              <li>O algoritmo do Instagram favorece vídeos sem corte — a retenção sobe</li>
+              <li>Use esse formato pra opiniões fortes, confissões e posicionamentos</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="6"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 CAIXINHA -->
+  <section class="section" id="caixinha">
+    <div class="format">
+      <div>
+        <div class="format-number">08 / 09</div>
+        <h2 class="format-name">Caixinha de Pergunta</h2>
+        <p class="format-tagline">"O público entrega a pauta. Você entrega a autoridade."</p>
+        <p class="format-desc">Você abre nos stories, o público manda as dúvidas, e você responde as melhores em Reel. O conteúdo é gerado pela audiência — você só precisa dominar as respostas.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-green">Pauta infinita</span>
+          <span class="quality-badge badge-gold">Profundidade de autoridade</span>
+          <span class="quality-badge badge-coral">Engajamento duplo</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Story com caixinha de perguntas aberta (mín 24h)</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Pergunta desafiadora ou polêmica — não a mais fácil</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Screenshot da pergunta pra mostrar no Reel</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Resposta estruturada: problema → causa → solução</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 45s a 90s</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Abra a caixinha num story simples: "Me manda sua maior dúvida sobre X"</li>
+              <li>Escolha a pergunta mais desafiadora — não as que você já tem resposta decorada</li>
+              <li>Mostre o print da pergunta no início do Reel — isso prova que é real</li>
+              <li>Responda com estrutura: "A maioria acha que é X. Na verdade é Y. E a razão é..."</li>
+              <li>Marque o perfil de quem perguntou — vira prova social e gera engajamento</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="7"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 BASTIDORES -->
+  <section class="section" id="bastidores">
+    <div class="format">
+      <div>
+        <div class="format-number">09 / 09</div>
+        <h2 class="format-name">Bastidores</h2>
+        <p class="format-tagline">"O que acontece antes do resultado que o mundo vê"</p>
+        <p class="format-desc">O processo invisível — preparação do evento, reunião de equipe, produção de conteúdo, entrega de produto. Quem acompanha os bastidores sente parte da jornada e compra com muito mais facilidade.</p>
+        <div class="quality-badges">
+          <span class="quality-badge badge-blue">Pertencimento</span>
+          <span class="quality-badge badge-gold">Confiança construída</span>
+          <span class="quality-badge badge-green">Jornada compartilhada</span>
+        </div>
+        <div class="gold-line"></div>
+        <div class="recipe">
+          <div class="recipe-header"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>RECEITA DO FORMATO</div>
+          <div class="recipe-section">
+            <div class="recipe-label">🥣 Ingredientes</div>
+            <ul class="ingredients">
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Processo real acontecendo — não encenado depois</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>4 a 7 clipes de momentos diferentes do processo</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Narração em voz over ou texto explicando cada etapa</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Momento de dificuldade incluído — não só o bonito</li>
+              <li><span class="ing-dot"><svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg></span>Duração: 45s a 90s</li>
+            </ul>
+          </div>
+          <div class="recipe-section">
+            <div class="recipe-label">👨‍🍳 Modo de preparo</div>
+            <ol class="steps">
+              <li>Grave durante o processo — não depois. A espontaneidade não se imita</li>
+              <li>Capture o momento de dificuldade: "Essa parte quase não deu certo porque..."</li>
+              <li>Monte em ordem cronológica: setup → processo → resultado</li>
+              <li>Adicione narração em voz over explicando o que estava pensando em cada etapa</li>
+              <li>Mostre pessoas além de você — equipe, clientes, parceiros</li>
+              <li>Feche mostrando o resultado final e o impacto real do que foi construído</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="videos-panel">
+        <div class="videos-label"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="8" rx="1.5" stroke="#8a8f9e" stroke-width="1"/><path d="M5 4.5l3 1.5-3 1.5V4.5z" fill="#8a8f9e"/></svg>EXEMPLOS DE REFERÊNCIA</div>
+        <div class="video-slots" data-format="8"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-logo">CD Grupo</div>
+  <div class="footer-sub">CHAVE ESMERALDA · ARSENAL DE FORMATOS · 2026</div>
+</footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAhWhob7EVq-11ilWWNCl2JV47wbfDXty8",
+    authDomain: "cd-grupo-formatos.firebaseapp.com",
+    databaseURL: "https://cd-grupo-formatos-default-rtdb.firebaseio.com",
+    projectId: "cd-grupo-formatos",
+    storageBucket: "cd-grupo-formatos.firebasestorage.app",
+    messagingSenderId: "495385747285",
+    appId: "1:495385747285:web:3782652cf89c2feafe99dc"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const linksRef = ref(db, 'links');
+
+  // Gera os slots
+  document.querySelectorAll('.video-slots').forEach(container => {
+    const formatIndex = +container.dataset.format;
+    for (let i = 0; i < 3; i++) {
+      const globalIndex = formatIndex * 3 + i;
+      container.innerHTML += `
+        <div class="video-slot-wrap">
+          <div class="video-thumb"><div class="play-icon"></div></div>
+          <div class="video-info">
+            <div class="video-slot-label">Exemplo ${i + 1}</div>
+            <input class="video-input" type="text" data-idx="${globalIndex}" placeholder="Cole o link aqui..." spellcheck="false"/>
+          </div>
+          <button class="video-go-btn" data-idx="${globalIndex}" title="Abrir">→</button>
+        </div>`;
+    }
+  });
+
+  // Escuta mudanças em tempo real — qualquer alteração aparece pra todos instantaneamente
+  onValue(linksRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    document.querySelectorAll('.video-input').forEach(input => {
+      const val = data[input.dataset.idx] || '';
+      if (input.value !== val) input.value = val;
+      const btn = input.closest('.video-slot-wrap').querySelector('.video-go-btn');
+      btn.classList.toggle('active', val.trim().length > 0);
+    });
+  });
+
+  // Salva no Firebase ao digitar
+  let saveTimer;
+  function showSync(msg) {
+    const bar = document.getElementById('syncBar');
+    bar.textContent = msg;
+    bar.classList.toggle('show', msg !== '');
+  }
+
+  async function saveLinks() {
+    const links = {};
+    document.querySelectorAll('.video-input').forEach(input => {
+      links[input.dataset.idx] = input.value;
+    });
+    showSync('Salvando...');
+    try {
+      await set(linksRef, links);
+      showSync('✓ Salvo para todos');
+      setTimeout(() => showSync(''), 2500);
+    } catch(e) {
+      showSync('Erro ao salvar');
+    }
+  }
+
+  document.addEventListener('input', e => {
+    if (e.target.classList.contains('video-input')) {
+      const btn = e.target.closest('.video-slot-wrap').querySelector('.video-go-btn');
+      btn.classList.toggle('active', e.target.value.trim().length > 0);
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveLinks, 1500);
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('video-go-btn')) {
+      const input = e.target.closest('.video-slot-wrap').querySelector('.video-input');
+      let url = input.value.trim();
+      if (!url) return;
+      if (!url.startsWith('http')) url = 'https://' + url;
+      window.open(url, '_blank');
+    }
+    if (e.target.classList.contains('video-input') && e.target.value.trim()) {
+      let url = e.target.value.trim();
+      if (!url.startsWith('http')) url = 'https://' + url;
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('video-input')) {
+      let url = e.target.value.trim();
+      if (!url) return;
+      if (!url.startsWith('http')) url = 'https://' + url;
+      window.open(url, '_blank');
+    }
+  });
+
+  // Nav
+  const nav = document.getElementById('stickyNav');
+  window.addEventListener('scroll', () => nav.classList.toggle('visible', window.scrollY > 400));
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
+  document.querySelectorAll('.format').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
